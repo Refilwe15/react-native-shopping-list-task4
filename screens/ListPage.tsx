@@ -15,12 +15,16 @@ export default function ListPage() {
           autoCapitalize="none"
         />
       </View>
-
+     <View style={{ flex: 1, justifyContent: "center" }}>
       <Image
         source={require("../assets/images/list.png")}
         style={styles.img}
-        resizeMode="contain"
+     
       />
+</View>
+      {/* empty text */}
+
+      <Text style={styles.inputs}>Your shopping list is empty ! Start adding items.</Text>
     </View>
   );
 }
@@ -56,11 +60,23 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 8,
     fontSize: 16,
+    color : "gray"
+  },
+    inputs: {
+    flex: 1,
+    marginLeft: 8,
+    fontSize: 16,
+    color : "gray",
+        marginTop: -100,
+    textAlign: "center",
+
   },
 
   img: {
     width: "100%",
     height: 300,
     alignSelf: "center",
+    marginRight : 50,
+    
   },
 });
