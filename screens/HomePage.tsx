@@ -1,136 +1,157 @@
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Feather from "@expo/vector-icons/Feather";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { Image } from "expo-image";
 import { router } from "expo-router";
+import React, { useEffect, useRef } from "react";
 import {
-    Image,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Animated,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
-export default function ListPage() {
+export default function HomeScreen() {
+  const fade = useRef(new Animated.Value(0)).current;
+  const slide = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fade, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.spring(slide, {
+        toValue: 0,
+        friction: 6,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      {/* Back Arrow */}
-      <Pressable style={styles.backButton} onPress={() => router.back()}>
-        <Feather name="arrow-left" size={24} color="gray" />
-      </Pressable>
+    <SafeAreaView style={styles.screen}>
+      <View style={styles.circle} />
 
-      <Text style={styles.title}>Shopping List</Text>
-
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Feather name="search" size={20} color="#999" />
-        <TextInput
-          placeholder="Search..."
-          style={styles.input}
-          autoCapitalize="none"
-        />
-      </View>
-
-      {/* Empty State */}
-      <View style={styles.emptyContainer}>
-        <Image
-          source={require("../assets/images/list.png")}
-          style={styles.img}
-          resizeMode="contain"
-        />
-
-        {/* Empty State */}
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>
-            Oopsie! Your shopping list is empty. Start adding items.
+      <View style={styles.body}>
+        <Animated.View
+          style={{
+            opacity: fade,
+            transform: [{ translateY: slide }],
+          }}
+        >
+          <Text style={styles.logo}>
+            Lis<Text style={styles.accent}>Tly</Text>
           </Text>
+        </Animated.View>
 
-          <Pressable
-            style={styles.buttonContainer}
-            onPress={() => router.push("/(tabs)/add-item")}
-          >
-            <Text  style={styles.buttonText}>Add Items <AntDesign name="plus" size={16} color="gray" /> </Text> 
-          </Pressable>
-        </View>
+        <Animated.Text style={[styles.text, { opacity: fade }]}>
+          From list to cart in seconds.
+        </Animated.Text>
+
+        <Animated.View
+          style={[
+            styles.imageBox,
+            {
+              opacity: fade,
+              transform: [{ scale: fade }],
+            },
+          ]}
+        >
+          <Image
+            source={require("../assets/images/shop.png")}
+            style={styles.image}
+            contentFit="contain"
+          />
+        </Animated.View>
       </View>
-    </View>
+
+      <Animated.View style={[styles.footer, { opacity: fade }]}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.pressed,
+          ]}
+          onPress={() => router.push("/(tabs)/list")}
+        >
+          <Text style={styles.buttonText}>Get Started</Text>
+        </Pressable>
+      </Animated.View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    backgroundColor: "white",
-    paddingHorizontal: 16,
+    backgroundColor: "#fff",
   },
-
-  backButton: {
+  circle: {
     position: "absolute",
-    top: 20,
-    left: 16,
-    zIndex: 10,
+    top: -60,
+    right: -60,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: "#F1F5F9",
   },
-
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 50,
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#534d4d",
-  },
-
-  searchContainer: {
-    flexDirection: "row",
+  body: {
+    flex: 1,
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    height: 45,
-  },
-
-  input: {
-    flex: 1,
-    marginLeft: 8,
-    fontSize: 16,
-    color: "gray",
-  },
-
-  emptyContainer: {
-    flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
   },
-
-  img: {
+  logo: {
+    fontSize: 42,
+    fontWeight: "900",
+    color: "#1E293B",
+    letterSpacing: -1,
+  },
+  accent: {
+    color: "#6366F1",
+  },
+  text: {
+    fontSize: 17,
+    color: "#64748B",
+    marginTop: 8,
+    textAlign: "center",
+  },
+  imageBox: {
+    marginTop: 40,
+    width: "100%",
+    alignItems: "center",
+  },
+  image: {
     width: 300,
     height: 300,
-    marginBottom: 20,
-    marginRight : 50 ,
   },
-
-  emptyText: {
-    fontSize: 16,
-    color: "gray",
-    textAlign: "center",
-    marginBottom: 120,
- 
+  footer: {
+    paddingHorizontal: 24,
+    paddingBottom: Platform.OS === "ios" ? 40 : 20,
+    alignItems: "center",
   },
-
-  buttonContainer: {
-   
-    borderColor : "gray",
-    borderWidth : 1,
-    paddingVertical: 14,
-    paddingHorizontal: 18,
-    borderRadius: 10,
-    marginBottom: 230,
+  button: {
+    backgroundColor: "#6366F1",
+    width: "100%",
+    paddingVertical: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
-
+  pressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
+  },
   buttonText: {
-    color: "gray",
-    fontSize: 16,
+    color: "#fff",
+    fontSize: 18,
     fontWeight: "600",
   },
 });
