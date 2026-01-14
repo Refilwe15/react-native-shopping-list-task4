@@ -21,34 +21,55 @@ export default function ListPage() {
   const [itemName, setItemName] = useState("");
   const [category, setCategory] = useState("");
   const [items, setItems] = useState<any[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const addItem = () => {
     if (!itemName || !category) return;
 
-    setItems((prev) => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        name: itemName,
-        category,
-      },
-    ]);
+    if (editingId) {
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === editingId
+            ? { ...item, name: itemName, category }
+            : item
+        )
+      );
+    } else {
+      setItems((prev) => [
+        ...prev,
+        { id: Date.now().toString(), name: itemName, category },
+      ]);
+    }
 
     setItemName("");
     setCategory("");
+    setEditingId(null);
     setModalVisible(false);
+  };
+
+  const deleteItem = (id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const editItem = (item: any) => {
+    setItemName(item.name);
+    setCategory(item.category);
+    setEditingId(item.id);
+    setModalVisible(true);
   };
 
   return (
     <View style={styles.screen}>
+      {/* Header */}
       <View style={styles.headerRow}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.back()}>
           <Feather name="chevron-left" size={28} color="#1F2937" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Shopping List</Text>
         <View style={{ width: 28 }} />
       </View>
 
+      {/* Search */}
       <View style={styles.searchBox}>
         <Feather name="search" size={18} color="#9CA3AF" />
         <TextInput
@@ -58,6 +79,7 @@ export default function ListPage() {
         />
       </View>
 
+      {/* List */}
       {items.length === 0 ? (
         <View style={styles.centerContent}>
           <Image
@@ -74,16 +96,41 @@ export default function ListPage() {
         <FlatList
           data={items}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
           renderItem={({ item }) => (
             <View style={styles.itemCard}>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemCategory}>{item.category}</Text>
+              <View style={styles.itemInfo}>
+                <Text style={styles.itemName}>{item.name}</Text>
+
+                {/* UPDATED CATEGORY STYLE */}
+                <View style={styles.categoryPill}>
+                  <Text style={styles.categoryPillText}>
+                    {item.category}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.itemActions}>
+                <TouchableOpacity
+                  style={styles.iconBtn}
+                  onPress={() => editItem(item)}
+                >
+                  <Feather name="edit-2" size={18} color="#4F46E5" />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.iconBtn}
+                  onPress={() => deleteItem(item.id)}
+                >
+                  <Feather name="trash-2" size={18} color="#EF4444" />
+                </TouchableOpacity>
+              </View>
             </View>
           )}
         />
       )}
 
+      {/* FAB */}
       <TouchableOpacity
         style={styles.fab}
         onPress={() => setModalVisible(true)}
@@ -91,14 +138,19 @@ export default function ListPage() {
         <AntDesign name="plus" size={22} color="#FFF" />
       </TouchableOpacity>
 
-      <Modal visible={modalVisible} transparent>
+      {/* UPDATED MODAL */}
+      <Modal visible={modalVisible} transparent animationType="slide">
         <KeyboardAvoidingView
           style={styles.modalBg}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-          <View style={styles.modalBox}>
+          <View style={styles.modalSheet}>
+            <View style={styles.modalHandle} />
+
             <View style={styles.modalTop}>
-              <Text style={styles.modalTitle}>New Item</Text>
+              <Text style={styles.modalTitle}>
+                {editingId ? "Edit Item" : "New Item"}
+              </Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>
                 <Feather name="x" size={22} color="#6B7280" />
               </TouchableOpacity>
@@ -117,20 +169,18 @@ export default function ListPage() {
               <Picker
                 selectedValue={category}
                 onValueChange={(value) => setCategory(value)}
-                style={styles.picker}
               >
                 <Picker.Item label="Select category" value="" />
-                <Picker.Item label="Groceries" value="Groceries" />
-                <Picker.Item label="Cleaning" value="Cleaning" />
-                <Picker.Item label="Electronics" value="Electronics" />
-                <Picker.Item label="Personal Care" value="Personal Care" />
-                <Picker.Item label="Household" value="Household" />
-                <Picker.Item label="Other" value="Other" />
+                <Picker.Item label="Food" value="Food" />
+                <Picker.Item label="Clothes" value="Clothes" />
+                <Picker.Item label="Cosmetics" value="Cosmetics" />
               </Picker>
             </View>
 
             <TouchableOpacity style={styles.saveBtn} onPress={addItem}>
-              <Text style={styles.saveText}>Save to List</Text>
+              <Text style={styles.saveText}>
+                {editingId ? "Update Item" : "Save to List"}
+              </Text>
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
@@ -145,72 +195,82 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 20,
   },
+
   headerRow: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
     marginTop: 60,
     marginBottom: 20,
   },
-  backBtn: {
-    padding: 4,
-  },
+
   headerTitle: {
     fontSize: 22,
     fontWeight: "800",
     color: "#1F2937",
   },
+
   searchBox: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F1F4F8",
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#c9cbce",
     paddingHorizontal: 16,
     height: 50,
     marginBottom: 20,
   },
-  searchInput: {
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 16,
-  },
-  centerContent: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  image: {
-    width: 260,
-    height: 260,
-    marginBottom: 20,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 8,
-  },
-  emptyText: {
-    fontSize: 15,
-    color: "#6B7280",
-    textAlign: "center",
-    marginBottom: 30,
-  },
+
+  searchInput: { flex: 1, marginLeft: 10, fontSize: 16 },
+
+  centerContent: { flex: 1, alignItems: "center", justifyContent: "center" },
+
+  image: { width: 260, height: 260, marginBottom: 20 },
+
+  emptyTitle: { fontSize: 20, fontWeight: "700", marginBottom: 8 },
+
+  emptyText: { fontSize: 15, color: "#6B7280", textAlign: "center" },
+
   itemCard: {
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
     padding: 16,
-    borderRadius: 14,
+    borderRadius: 16,
     marginBottom: 12,
+    flexDirection: "row",
+    elevation: 3,
   },
-  itemName: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#1F2937",
+
+  itemInfo: { flex: 1 },
+
+  itemName: { fontSize: 16, fontWeight: "700", marginBottom: 6 },
+
+  /* 🔥 NEW CATEGORY STYLE */
+  categoryPill: {
+    alignSelf: "flex-start",
+    borderWidth: 1,
+    borderColor: "#4F46E5",
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 14,
   },
-  itemCategory: {
-    fontSize: 14,
-    color: "#6B7280",
-    marginTop: 4,
+
+  categoryPillText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#4F46E5",
   },
+
+  itemActions: { flexDirection: "row" },
+
+  iconBtn: {
+    padding: 8,
+    marginLeft: 10,
+    borderRadius: 20,
+    backgroundColor: "#F3F4F6",
+  },
+
   fab: {
     position: "absolute",
     bottom: 30,
@@ -221,57 +281,66 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
-    elevation: 5,
   },
+
+ 
   modalBg: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.6)",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
-  modalBox: {
-    width: "90%",
+
+  modalSheet: {
     backgroundColor: "#fff",
-    borderRadius: 20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
     padding: 24,
   },
+
+  modalHandle: {
+    width: 40,
+    height: 5,
+    backgroundColor: "#D1D5DB",
+    borderRadius: 10,
+    alignSelf: "center",
+    marginBottom: 14,
+  },
+
   modalTop: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
   },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 6,
-  },
+
+  modalTitle: { fontSize: 20, fontWeight: "700" },
+
+  label: { fontSize: 14, fontWeight: "600", marginBottom: 6 },
+
   input: {
     backgroundColor: "#F3F4F6",
+    borderWidth : 1,
+    borderColor: "#c6cbd4",
+    fontSize: 16,
     borderRadius: 12,
     padding: 14,
     marginBottom: 16,
   },
+
   pickerBox: {
     backgroundColor: "#F3F4F6",
+    borderWidth: 1,
+    borderColor: "#c6cbd4",
+    padding : 14,
     borderRadius: 12,
     marginBottom: 24,
   },
-  picker: {
-    height: 50,
-  },
+
   saveBtn: {
     backgroundColor: "#4F46E5",
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: "center",
   },
-  saveText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "700",
-  },
+
+  saveText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 });
