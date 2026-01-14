@@ -1,3 +1,4 @@
+// shoppingSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type ShoppingItem = {
@@ -16,13 +17,13 @@ const shoppingSlice = createSlice({
     addItem: (state, action: PayloadAction<ShoppingItem>) => {
       state.push(action.payload);
     },
-    deleteItem: (state, action: PayloadAction<string>) => {
-      return state.filter(item => item.id !== action.payload);
-    },
     editItem: (state, action: PayloadAction<ShoppingItem>) => {
       return state.map(item =>
         item.id === action.payload.id ? action.payload : item
       );
+    },
+    deleteItem: (state, action: PayloadAction<string>) => {
+      return state.filter(item => item.id !== action.payload);
     },
     togglePurchased: (state, action: PayloadAction<string>) => {
       const item = state.find(i => i.id === action.payload);
@@ -30,16 +31,11 @@ const shoppingSlice = createSlice({
     },
     setItems: (_, action: PayloadAction<ShoppingItem[]>) => {
       return action.payload;
-    }
-  }
+    },
+  },
 });
 
-export const {
-  addItem,
-  deleteItem,
-  editItem,
-  togglePurchased,
-  setItems
-} = shoppingSlice.actions;
+export const { addItem, editItem, deleteItem, togglePurchased, setItems } =
+  shoppingSlice.actions;
 
 export default shoppingSlice.reducer;
