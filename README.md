@@ -1,8 +1,43 @@
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Project Description ##
 
-## Get started
+React Native (Expo) shopping list application that helps users manage items by category, add descriptions, edit items, and delete them using intuitive
+swipe gestures. The app uses Redux Toolkit for state management and Expo Router for navigation.
+
+## Featrures 
+
+- Add, edit, and delete shopping items
+- Categorize items (Food, Clothes, Cosmetics)
+- Optional item descriptions
+- Swipe-to-delete gestures
+
+## Tech Stack
+
+- React Native
+- Expo
+- Expo Router
+- Redux
+- Expo Vector Icons
+
+
+## Project Structure
+
+
+├── app/
+│   ├── index.tsx
+│   ├── ListPage.tsx
+│
+├── store/
+│   ├── shoppingSlice.ts
+│   ├── store.ts
+│
+├── assets/
+│   └── images/
+│       └── ii.png
+│
+├── README.md
+└── package.json
+
 
 1. Install dependencies
 
@@ -16,35 +51,17 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Screenshots
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Home Screen
 
-## Get a fresh project
+![Home Screen](assets/screenshoots/landingScreen.png)
 
-When you're ready, run:
+### Empty List
 
-```bash
-npm run reset-project
-```
+![Empty Screen](assets/screenshoots/emptyScreen.png)
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## List Screen
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+![List Screen](assets/screenshoots/listScreen.png)

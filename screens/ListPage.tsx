@@ -189,7 +189,6 @@ export default function ListPage() {
                   selectedValue={category}
                   onValueChange={(v) => setCategory(v)}
                   style={styles.picker}
-                  dropdownIconColor="#111827"
                 >
                   {CATEGORIES.map((c) => (
                     <Picker.Item key={c} label={c} value={c} />
@@ -341,11 +340,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#FAFAFA",
     marginBottom: 20,
+    height: Platform.OS === "ios" ? 180 : 50,
     overflow: "hidden",
   },
 
   picker: {
-    height: 50,
+    height: Platform.OS === "ios" ? 180 : 50,
     color: "#111827",
   },
 
@@ -369,6 +369,11 @@ const styles = StyleSheet.create({
     width: 90,
     borderRadius: 14,
   },
+  description : {
+    color: "#6B7280",
+    marginTop: 4,
+  },
+  
 
   swipeText: { color: "#fff", fontWeight: "700", marginTop: 4 },
 
