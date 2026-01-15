@@ -1,4 +1,3 @@
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useEffect, useRef } from "react";
@@ -51,6 +50,9 @@ export default function HomeScreen() {
           From list to cart in seconds.
         </Animated.Text>
 
+        {/* TOP DIVIDER */}
+        <View style={styles.divider} />
+
         <Animated.View
           style={[
             styles.imageBox,
@@ -69,6 +71,9 @@ export default function HomeScreen() {
       </View>
 
       <Animated.View style={[styles.footer, { opacity: fade }]}>
+        {/* FOOTER DIVIDER */}
+        <View style={styles.footerDivider} />
+
         <Pressable
           style={({ pressed }) => [
             styles.button,
@@ -88,6 +93,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+
   circle: {
     position: "absolute",
     top: -60,
@@ -97,45 +103,69 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "#F1F5F9",
   },
+
   body: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 30,
   },
+
   logo: {
     fontSize: 42,
     fontWeight: "900",
     color: "#1E293B",
     letterSpacing: -1,
   },
+
   accent: {
     color: "#6366F1",
   },
+
   text: {
     fontSize: 17,
     color: "#64748B",
     marginTop: 8,
     textAlign: "center",
   },
+
+  divider: {
+    width: "60%",
+    height: 2,
+    backgroundColor: "#E5E7EB",
+    marginVertical: 24,
+  },
+
   imageBox: {
-    marginTop: 40,
+    marginTop: 10,
     width: "100%",
     alignItems: "center",
   },
+
   image: {
     width: 300,
     height: 300,
   },
+
   footer: {
     paddingHorizontal: 24,
-    paddingBottom: Platform.OS === "ios" ? 40 : 20,
+    
     alignItems: "center",
+    width: "100%",
   },
+
+  footerDivider: {
+    width: "100%",
+    height: 2,
+    backgroundColor: "#E5E7EB",
+    marginBottom: 20,
+  },
+
   button: {
     backgroundColor: "#6366F1",
     width: "100%",
     paddingVertical: 16,
+    marginBottom : 60,
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
@@ -145,10 +175,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
   },
+
   pressed: {
     opacity: 0.8,
     transform: [{ scale: 0.98 }],
   },
+
   buttonText: {
     color: "#fff",
     fontSize: 18,
